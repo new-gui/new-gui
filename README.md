@@ -1,4 +1,4 @@
-this bot is used to replace pmans posting spree ads across dank servers, it create a channel and choose the right range ping role depending on interact guild member count (which is wrong)
+this bot is used to replace pmans posting spree ads across dank servers, it create a channel and choose the right range ping role depending on interaction guild member count (which is wrong)
 
 # Setup:
 
