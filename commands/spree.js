@@ -5,17 +5,14 @@ const path = require('path');
 
 const queues = new Map();
 
-// Load the blocked words JSON file
 const blockedWordsFile = path.join(__dirname, 'blockedWords.json');
 const blockedWords = JSON.parse(fs.readFileSync(blockedWordsFile, 'utf8')).blocked_words;
 
-// Create a regular expression to match any of the blocked words, allowing for spaces or non-alphabetic characters between letters
 const blockedWordsRegex = new RegExp(blockedWords.map(word => {
   const spacedWord = word.split('').join('[^a-zA-Z]*');
   return `\\b${spacedWord}\\b`;
 }).join('|'), 'i');
 
-// Regular expressions to match pings and invalid links
 const pingRegex = /<@!?&?\d+>|@everyone|@here/g;
 const linkRegex = /https?:\/\/(?!discord\.gg\/)\S+/g;
 
@@ -103,9 +100,8 @@ async function processQueue(userId) {
 async function getConfirmations(serverIds, interaction, adMessage, totalMemberCount) {
   const ownerMap = new Map();
 
-  // Group servers by their owners, excluding the interaction guild
   for (const serverId of serverIds) {
-    if (serverId === interaction.guild.id) continue; // Exclude interaction guild
+    if (serverId === interaction.guild.id) continue; 
 
     const guild = interaction.client.guilds.cache.get(serverId);
     if (guild) {
@@ -233,7 +229,6 @@ module.exports = {
           if (!setup) {
             invalidServers.push(`${server.name} (${serverId})`);
           } else {
-            // Validate roles
             const missingRoles = [];
             for (const rangeKey in setup.roleRanges) {
               const roleId = setup.roleRanges[rangeKey].roleId;
@@ -247,7 +242,6 @@ module.exports = {
               return;
             }
 
-            // Validate categories
             const category = server.channels.cache.get(setup.categoryId);
             if (!category || category.type !== 'GUILD_CATEGORY') {
               await interaction.followUp(`Category ID ${setup.categoryId} not found or invalid in server ${server.name}`);
@@ -275,7 +269,6 @@ module.exports = {
       collector.on('collect', async message => {
         const adMessage = message.content;
 
-        // Check the ad message for blocked words, pings, and invalid links
         if (blockedWordsRegex.test(adMessage)) {
           const matchedWord = adMessage.match(blockedWordsRegex)[0];
           await interaction.followUp(`Your ad contains a blocked word: "${matchedWord}". Ad posting canceled.`);
